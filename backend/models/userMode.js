@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bcrypt = require("bcryptjs")
+
 
 const userModel = mongoose.Schema(
     {
@@ -8,7 +10,8 @@ const userModel = mongoose.Schema(
         },
         email: {
             type: String,
-            required: true
+            required: true,
+            unique: true
         },
         password: {
             type: String,
@@ -16,7 +19,6 @@ const userModel = mongoose.Schema(
         },
         pic: {
             type: "String",
-            required: true,
             default:
                 "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
         },
@@ -26,6 +28,17 @@ const userModel = mongoose.Schema(
     }
 
 )
+
+userModel.methods.matchpassword = async function (enteredpassword) {
+    return await bcrypt.compare(enteredpassword, this.password)
+}
+userModel.pre('save', async function (next) {
+    if(!this.isModified){
+        next()
+    }
+    const salt = await bcrypt.genSalt(10)
+    this.password = await bcrypt.hash(this.password, salt)
+})
 
 
 const User = mongoose.model('User', userModel)
