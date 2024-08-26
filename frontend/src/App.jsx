@@ -6,12 +6,10 @@ import Home from './pages/Home'
 const App = () => {
   return (
     <div className='App'>
-      <BrowserRouter>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/chat' element={<ChatPage />} />
         </Routes>
-      </BrowserRouter>
     </div>
   )
 }
